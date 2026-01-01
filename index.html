@@ -319,6 +319,35 @@
             0% { transform: translateY(0) scale(0.2); opacity: 1; }
             100% { transform: translateY(-100px) scale(1); opacity: 0; }
         }
+        .replay-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #00ff41;
+            color: #0a0a0a;
+            border: none;
+            padding: 15px 30px;
+            font-family: var(--font-display);
+            font-size: 1.5em;
+            cursor: pointer;
+            z-index: 1000;
+            border-radius: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .replay-button:hover {
+            background-color: #00cc33;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.9);
+            transform: translate(-50%, -50%) scale(1.05);
+        }
+
+        .replay-button.hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -333,7 +362,7 @@
     </audio>
 
     <div id="container">
-        <div id="visuals"></div>
+        <div id="visuals"></div><div id="replay-btn" class="replay-button hidden">REPLAY</div>
     </div>
 
     <script>
@@ -999,6 +1028,37 @@
         function finalExecution() { showEmphasis({ text: 'EXECUTION', className: 'error' }); }
 
         function varGet(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+        const replayBtn = document.getElementById('replay-btn');
+
+function showReplayButton() {
+    replayBtn.classList.remove('hidden');
+}
+
+function replayExperience() {
+    // 隐藏重播按钮
+    replayBtn.classList.add('hidden');
+    // 重置所有元素
+    visuals.innerHTML = '';
+    clearShapes();
+    
+    // 重置动画变量
+    currentIndex = 0;
+    if(animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+    }
+    
+    // 移除所有应用的类
+    container.classList.remove('ac-mode', 'dc-mode', 'blind', 'dizzy', 'time-travel', 'error', 'screenShake');
+    
+    // 重新开始体验
+    startExperience();
+}
+
+// 监听歌曲结束事件以显示重播按钮
+song.addEventListener('ended', showReplayButton);
+
+// 为重播按钮添加点击事件
+replayBtn.addEventListener('click', replayExperience);
     </script>
 </body>
 </html>
